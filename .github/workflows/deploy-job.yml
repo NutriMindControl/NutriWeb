@@ -5,16 +5,16 @@ on:
     branches: [ "ci/cd", "main"]
 
 jobs:
-#  prepare-prod:
-#    runs-on: self-hosted
-#    environment: prod
-#    steps:
-#      - name: Stop and remove containers, networks
-#        run: docker rm $(docker stop $(docker ps -a -q --filter ancestor=talkychef-web:latest --format="{{.ID}}"))
+  prepare-prod:
+    runs-on: self-hosted
+    environment: prod
+    steps:
+      - name: Stop and remove containers, networks
+        run: docker rm $(docker stop $(docker ps -a -q --filter ancestor=talkychef-web:latest --format="{{.ID}}"))
   deploy-on-prod:
     runs-on: self-hosted
     environment: prod
-#    needs: prepare-prod
+    needs: prepare-prod
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
