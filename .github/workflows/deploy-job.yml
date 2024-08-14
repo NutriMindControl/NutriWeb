@@ -2,7 +2,7 @@ name: Deploy by runner
 
 on:
   push:
-    branches: [ "ci/cd", "main"]
+    branches: ["main"]
 
 jobs:
   prepare-prod:
