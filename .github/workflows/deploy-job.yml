@@ -1,0 +1,24 @@
+name: Deploy by runner
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  prepare-prod:
+    runs-on: self-hosted
+    environment: prod
+    steps:
+      - name: Stop and remove containers, networks
+        run: docker rm $(docker stop $(docker ps -a -q --filter ancestor=talkychef-web:latest --format="{{.ID}}"))
+  deploy-on-prod:
+    runs-on: self-hosted
+    environment: prod
+    needs: prepare-prod
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: docker-build
+        run: docker build -t talkychef-web .
+      - name: docker-run
+        run: docker run -p 5500:80 -d talkychef-web:latest
