@@ -4,22 +4,24 @@ class Recipe {
   final int id;
   final String name;
   final List<Ingredient> ingredients;
-  final int prepTimeMins;
-  final int servings;
-  final int? kilocalories;
-  final int? proteins;
-  final int? fats;
-  final int? carbohydrates;
+  final int? prepTimeMins;
+  final int cookTimeMins;
+  final double servings;
+  final double calories;
+  final double proteins;
+  final double fats;
+  final double carbohydrates;
 
   Recipe({
     required this.id,
     required this.name,
     required this.ingredients,
     required this.servings,
-    required this.prepTimeMins,
-    this.kilocalories,
-    this.proteins,
-    this.fats,
-    this.carbohydrates,
+    required this.calories,
+    required this.proteins,
+    required this.fats,
+    required this.carbohydrates,
+    required this.cookTimeMins,
+    this.prepTimeMins,
   });
 }

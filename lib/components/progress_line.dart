@@ -15,8 +15,16 @@ class ProgressLine extends StatelessWidget {
     required this.totalCount,
   });
 
+  double _handleDouble(double num) {
+    num *= 100;
+    num = num.roundToDouble();
+    num /= 100;
+    return num;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final percent = currentCount > totalCount ? 1 : (currentCount/totalCount);
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 10),
       child: Column(
@@ -35,7 +43,7 @@ class ProgressLine extends StatelessWidget {
                   ),
                   Spacer(),
                   Text(
-                    '$currentCount/$totalCount',
+                    '${currentCount.toInt()}/${totalCount.toInt()}',
                     style: TextStyle(fontSize: 15, color: color),
                   ),
                 ],
@@ -53,7 +61,7 @@ class ProgressLine extends StatelessWidget {
               ),
               Container(
                 height: 10,
-                width: MediaQuery.of(context).size.width * 0.3 * (currentCount/totalCount),
+                width: MediaQuery.of(context).size.width * 0.3 * percent,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   color: color,
