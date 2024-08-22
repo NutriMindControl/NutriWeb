@@ -28,7 +28,7 @@ class IngredientWidget extends StatelessWidget {
           ),
           Spacer(),
           Text(
-            ingredient.count.toString(),
+            ingredient.count,
             style: TextStyle(
               // color: MyColors().darkComponent,
               fontSize: 20,

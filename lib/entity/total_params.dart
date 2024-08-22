@@ -1,13 +1,12 @@
 class TotalParams {
-  final double totalCalories;
-  final double totalFats;
-  final double totalProteins;
-  final double totalCarbohydrate;
-  final double requiredCaloties;
-  final double dailyProteinNeeds;
-  final double dailyFatNeeds;
-  final double dailyCarbohydrateNeeds;
-  final double imt;
+  final int totalCalories;
+  final int totalFats;
+  final int totalProteins;
+  final int totalCarbohydrate;
+  final int requiredCaloties;
+  final int dailyProteinNeeds;
+  final int dailyFatNeeds;
+  final int dailyCarbohydrateNeeds;
 
   TotalParams({
     required this.totalCalories,
@@ -18,6 +17,5 @@ class TotalParams {
     required this.dailyProteinNeeds,
     required this.dailyFatNeeds,
     required this.dailyCarbohydrateNeeds,
-    required this.imt,
   });
 }
