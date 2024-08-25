@@ -6,6 +6,7 @@ class TopDropButton extends StatefulWidget {
   final list;
   final onChanged;
   final hint;
+  final width;
 
   const TopDropButton({
     super.key,
@@ -13,6 +14,7 @@ class TopDropButton extends StatefulWidget {
     required this.list,
     required this.onChanged,
     required this.hint,
+    required this.width,
   });
 
   @override
@@ -29,69 +31,55 @@ class _TopDropButtonState extends State<TopDropButton> {
   Widget build(BuildContext context) {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      padding: const EdgeInsets.symmetric(horizontal: 15.0),
       child: Container(
-        
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         decoration: BoxDecoration(
           color: MyColors().lightComponent,
           borderRadius: BorderRadius.circular(15)
         ),
-        child: DropdownButton<String>(
-          value: dropdownValue,
-          onChanged: (String? newValue) => onChanged(newValue),
-          items: widget.list
-              .map<DropdownMenuItem<String>>(
-                  (String value) => DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                            value,
-                          style: TextStyle(
-                            color: MyColors().middleText,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: widget.width,
+          ),
+          child: DropdownButton<String>(
+            value: dropdownValue,
+            isExpanded: true,
+            onChanged: (String? newValue) => onChanged(newValue),
+            items: widget.list
+                .map<DropdownMenuItem<String>>(
+                    (String value) => DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(
+                              value,
+                            style: TextStyle(
+                              fontSize: 15
+                            ),
+                              overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
                           ),
                         ),
-                      ))
-              .toList(),
-
-          // add extra sugar..
-          icon: Icon(Icons.keyboard_arrow_down),
-          iconSize: 30,
-          underline: SizedBox(),
-          menuMaxHeight: MediaQuery.of(context).size.height * 0.3,
-          borderRadius: BorderRadius.circular(10),
-          hint: Text(
-              hint,
-            style:  TextStyle(
-              color: MyColors().darkComponent,
             )
+                .toList(),
+
+            // add extra sugar..
+            icon: Icon(Icons.keyboard_arrow_down),
+            iconSize: 30,
+            underline: SizedBox(),
+            menuMaxHeight: MediaQuery.of(context).size.height * 0.3,
+            borderRadius: BorderRadius.circular(10),
+            hint: Text(
+                hint,
+              style:  TextStyle(
+                color: MyColors().darkComponent,
+              )
+            ),
+            style: TextStyle(
+              fontSize: 15,
+              // color: MyColors().lightText
+            ),
           ),
-          style: TextStyle(
-            fontSize: 20,
-            // color: MyColors().lightText
-          ),
-            // focusColor: MyColors().lightComponent,
         ),
-      ),
-    );
-
-    return DropdownMenu<String>(
-      onSelected: (String? value) {
-        onChanged;
-      },
-      dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {
-        return DropdownMenuEntry<String>(value: value, label: value);
-      }).toList(),
-      hintText: "Age",
-        width: 100,
-
-      menuStyle: MenuStyle(
-          surfaceTintColor:MaterialStateProperty.resolveWith((states) {
-            // If the button is pressed, return green, otherwise blue
-            if (states.contains(MaterialState.pressed)) {
-              return Colors.green;
-            }
-            return Colors.blue;
-          }),
       ),
     );
   }

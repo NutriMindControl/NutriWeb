@@ -3,11 +3,11 @@ import 'package:sberlab/entity/recipe.dart';
 import 'package:sberlab/entity/total_params.dart';
 
 class DailyMenu {
-  final String date;
-  final Meal breakfastMeals;
-  final Meal launchMeals;
-  final Meal dinnerMeals;
-  final TotalParams params;
+  DateTime date;
+  Meal breakfastMeals;
+  Meal launchMeals;
+  Meal dinnerMeals;
+  TotalParams params;
 
   DailyMenu({
     required this.date,
@@ -19,9 +19,9 @@ class DailyMenu {
 }
 
 class Meal {
-  final List<Recipe> recipes;
-  final List<Product> products;
-  final int kilocalories;
+  List<Recipe> recipes;
+  List<Product> products;
+  final int calories;
   final int fats;
   final int carbohydrates;
   final int proteins;
@@ -29,7 +29,7 @@ class Meal {
   Meal({
     required this.recipes,
     required this.products,
-    required this.kilocalories,
+    required this.calories,
     required this.fats,
     required this.carbohydrates,
     required this.proteins,
