@@ -2,32 +2,20 @@ import 'dart:html';
 import 'dart:typed_data';
 
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
-import 'package:sberlab/assets/sizes.dart';
 import 'package:sberlab/components/block.dart';
 import 'package:sberlab/components/chart.dart';
 import 'package:sberlab/components/drop_button.dart';
-import 'package:sberlab/components/food_value_widget.dart';
-import 'package:sberlab/components/ingredient_widget.dart';
 import 'package:sberlab/components/my_toggle_buttons.dart';
 import 'package:sberlab/components/progress_line.dart';
 import 'package:sberlab/components/meal_panel.dart';
 import 'package:sberlab/dto/daily_menu_dto.dart';
-import 'package:sberlab/dto/diagnosis_dto.dart';
-import 'package:sberlab/dto/total_params_dto.dart';
 import 'package:sberlab/entity/daily_menu.dart';
 import 'package:sberlab/entity/diagnosis.dart';
 import 'package:sberlab/entity/food_value.dart';
-import 'package:sberlab/entity/ingredient.dart';
-import 'package:sberlab/entity/product.dart';
-import 'package:sberlab/entity/recipe.dart';
-import 'package:sberlab/entity/total_params.dart';
 import 'package:sberlab/mappers/daily_menu_mapper.dart';
-import 'package:sberlab/mappers/diagnosis_mapper.dart';
-import 'package:sberlab/mappers/total_params_mapper.dart';
 import 'package:sberlab/service/daily_menu_service.dart';
 import 'package:sberlab/service/mock_daily_menu_service.dart';
 
@@ -49,7 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> ages = [];
   List<String> activitylevels = [];
 
-  List<String> diagnosisValues = ['диабет', 'рпп', 'гастрит', 'шизофрения'];
+  List<String> diagnosisValues = [];
   List<FoodValue> foodValues = [
     FoodValue(value: 'Калории', count: 375, unit: 'ккл'),
     FoodValue(value: 'Жиры', count: 13, unit: 'г'),
@@ -72,6 +60,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<bool> selected = <bool>[false, true];
   bool infoExist = false;
   bool isLoading = true;
+  bool lockButtons = false;
+  DateTime dateTime = DateTime.now();
 
   DailyMenu dailyMenu =
       DailyMenuMapper().fromDto(DailyMenuDTO.fromJson(jsonMenu));
@@ -108,11 +98,13 @@ class _MyHomePageState extends State<MyHomePage> {
     final weight = weightController.text;
     final age = currentAge!.split(' ');
     await DailyMenuService()
-        .getDailyMenu(height, weight, age[0], selected[0] == true, currentPhysicalActivityLevel!, id)
+        .getDailyMenu(height, weight, age[0], selected[0] == true,
+            currentPhysicalActivityLevel!, id)
         .then((value) {
       setState(() {
         dailyMenu = value;
         isLoading = false;
+        lockButtons = true;
       });
     });
   }
@@ -121,7 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     _getLevels();
     _getDiagnosis();
-
 
     // DailyMenuService().getDailyMenu(150, 50, 17, true, "Умеренная", 1);
     for (int i = 100; i < 210; i++) {
@@ -152,6 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onChangedPhysicalActivityLevel(String? physicalActivityLeve) {
+    lockButtons = false;
     setState(() => currentPhysicalActivityLevel =
         physicalActivityLeve ?? currentPhysicalActivityLevel);
   }
@@ -161,6 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onChangedGender(int index) {
+    lockButtons = false;
     setState(() {
       for (int i = 0; i < selected.length; i++) {
         selected[i] = i == index;
@@ -192,8 +185,39 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: dateTime,
+        initialDatePickerMode: DatePickerMode.day,
+        firstDate: DateTime(1900, 1, 1),
+        lastDate: DateTime(2101));
+    if (picked != null) {
+      dateTime = picked;
+      lockButtons = false;
+      ageController.text = calculateAge(picked).toString();
+      currentAge = calculateAge(picked).toString();
+      setState(() {});
+    }
+  }
+
+  // Function to calculate age
+  int calculateAge(DateTime birthDate) {
+    DateTime today = DateTime.now();
+    int age = today.year - birthDate.year;
+
+    // Adjust age if the birth date hasn't occurred yet this year
+    if (today.month < birthDate.month ||
+        (today.month == birthDate.month && today.day < birthDate.day)) {
+      age--;
+    }
+
+    return age;
+  }
+
   final TextEditingController heightController = TextEditingController();
   final TextEditingController weightController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -218,13 +242,41 @@ class _MyHomePageState extends State<MyHomePage> {
                       title: hintWeight,
                       controller: weightController,
                     ),
-                    TopDropButton(
-                      dropdownValue: currentAge,
-                      list: ages,
-                      onChanged: onChangedAge,
-                      hint: hintAge,
-                      width: 100,
+                    // TopDropButton(
+                    //   dropdownValue: currentAge,
+                    //   list: ages,
+                    //   onChanged: onChangedAge,
+                    //   hint: hintAge,
+                    //   width: 100,
+                    // ),
+                    Row(
+                      children: [
+                        Text(
+                          "Возраст: ",
+                          style: TextStyle(
+                            color: MyColors().darkComponent,
+                            fontSize: 20,
+                          ),
+                        ),
+                        Container(
+                          width: 50,
+                          padding: const EdgeInsets.only(bottom: 15, right: 10),
+                          alignment: Alignment.center,
+                          child: TextFormField(
+                            readOnly: true,
+                            textAlign: TextAlign.center,
+                            onTap: _selectDate,
+                            cursorHeight: 20,
+                            style: const TextStyle(
+                              // color: MyColors().darkComponent,
+                              fontSize: 18,
+                            ),
+                            controller: ageController, //the controller
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(width: 10),
                     // age
                     MyToggleButtons(
                       selected: selected,
@@ -246,53 +298,55 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 270,
                     ),
                     //diagnoseId
-                    if (!infoExist) TextButton(
-                      onPressed: () async {
-                        setState(() async {
-                          if (weightController.text.isNotEmpty
-                              && currentAge != null
-                              && currentDiagnose != null
-                              && currentPhysicalActivityLevel != null
-                              && heightController.text.isNotEmpty) {
-                              infoExist = true;
-                              await _getDailyMenu();
-                            }
-                          });
-                      },
-                      child: Text(
-                        'Найти рецепты',
-                        style: TextStyle(
-                          color: MyColors().darkComponent,
-                          fontSize: 20,
-                          decoration: TextDecoration.underline,
-                          decorationColor: MyColors().darkComponent,
-                        ),
-                      ),
-                    ),
-                    if (infoExist && !isLoading) Spacer(),
-                    if (infoExist && !isLoading)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: IconButton(
-                            onPressed: () async {
-                              Uint8List pdfInBytes = await DailyMenuService().getPDF(dailyMenu);
-                              final blob = html.Blob([pdfInBytes], 'application/pdf');
-                              final url = html.Url.createObjectUrlFromBlob(blob);
-                              final anchor = html.document.createElement('a') as html.AnchorElement
-                                ..href = url
-                                ..style.display = 'none'
-                                ..download = 'pdf.pdf';
-                              html.document.body?.children.add(anchor);
-                              anchor.click();
-                            },
-                            icon: Icon(
-                                Icons.download,
-                              size: 30,
-                              color: MyColors().darkComponent,
-                            ),
+                    if (!infoExist)
+                      TextButton(
+                        onPressed: () async {
+                          if (weightController.text.isNotEmpty &&
+                              currentAge != null &&
+                              currentDiagnose != null &&
+                              currentPhysicalActivityLevel != null &&
+                              heightController.text.isNotEmpty) {
+                            infoExist = true;
+                            await _getDailyMenu();
+                          }
+                          setState(() {});
+                        },
+                        child: Text(
+                          'Найти рецепты',
+                          style: TextStyle(
+                            color: MyColors().darkComponent,
+                            fontSize: 20,
+                            decoration: TextDecoration.underline,
+                            decorationColor: MyColors().darkComponent,
                           ),
                         ),
-
+                      ),
+                    if (infoExist && !isLoading) Spacer(),
+                    if (infoExist && !isLoading)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: IconButton(
+                          onPressed: () async {
+                            Uint8List pdfInBytes =
+                                await DailyMenuService().getPDF(dailyMenu);
+                            final blob =
+                                html.Blob([pdfInBytes], 'application/pdf');
+                            final url = html.Url.createObjectUrlFromBlob(blob);
+                            final anchor = html.document.createElement('a')
+                                as html.AnchorElement
+                              ..href = url
+                              ..style.display = 'none'
+                              ..download = 'pdf.pdf';
+                            html.document.body?.children.add(anchor);
+                            anchor.click();
+                          },
+                          icon: Icon(
+                            Icons.download,
+                            size: 30,
+                            color: MyColors().darkComponent,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -316,7 +370,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(
             width: 300,
             height: 200,
-            child: RiveAnimation.asset('loading_animation.riv'),
+            child: RiveAnimation.asset('assets/loading_animation.riv'),
           ),
         ],
       ),
@@ -423,6 +477,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.breakfast,
               meal: dailyMenu.breakfastMeals,
+              lockButtons: lockButtons,
             ),
             MealPanel(
               updateMeal: updateMeal,
@@ -430,6 +485,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.launch,
               meal: dailyMenu.launchMeals,
+              lockButtons: lockButtons,
             ),
             MealPanel(
               updateMeal: updateMeal,
@@ -437,6 +493,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.dinner,
               meal: dailyMenu.dinnerMeals,
+              lockButtons: lockButtons,
             ),
           ],
         ),

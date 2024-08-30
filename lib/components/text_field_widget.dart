@@ -27,12 +27,13 @@ class TextFieldWidget extends StatelessWidget {
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(vertical: 15),
             width: 50,
             height: 100,
+            padding: EdgeInsets.only(bottom: 10),
             child: TextFormField(
               controller: controller,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              cursorHeight: 20,
               inputFormatters: <TextInputFormatter>[
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]+[,.]{0,1}[0-9]*')),
                 TextInputFormatter.withFunction(
@@ -41,14 +42,14 @@ class TextFieldWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              style: TextStyle(
+              style: const TextStyle(
                 // color: MyColors().darkComponent,
                 fontSize: 20,
               ),
               // decoration: InputDecoration(
-              //   label: Text('label'),
-              //   errorText: 'error',
-              //   icon: Icon(Icons.add),
+              //   border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.blue)
+              //   ),
               // ),
             ),
           ),

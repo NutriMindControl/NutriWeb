@@ -18,6 +18,7 @@ class MealPanel extends StatelessWidget {
   final Function(MealType) updateMeal;
   final Function(int, MealType) updateRecipe;
   final Function(int, MealType) updateProduct;
+  final bool lockButtons;
 
   MealPanel({
     super.key,
@@ -26,6 +27,7 @@ class MealPanel extends StatelessWidget {
     required this.updateMeal,
     required this.updateRecipe,
     required this.updateProduct,
+    required this.lockButtons,
   });
 
   String _title() {
@@ -60,9 +62,11 @@ class MealPanel extends StatelessWidget {
                 ),
                 Spacer(),
                 IconButton(
-                  onPressed: () {
-                    updateMeal(type);
-                  },
+                  onPressed: lockButtons
+                      ? null
+                      : () {
+                          updateMeal(type);
+                        },
                   icon: Icon(
                     Icons.refresh,
                     size: 30,
@@ -76,6 +80,7 @@ class MealPanel extends StatelessWidget {
                 recipe: recipe,
                 type: type,
                 updateRecipe: updateRecipe,
+                lockButtons: lockButtons,
               ),
             ),
             ...meal.products.map(
@@ -83,6 +88,7 @@ class MealPanel extends StatelessWidget {
                 product: product,
                 type: type,
                 updateProduct: updateProduct,
+                lockButtons: lockButtons,
               ),
             ),
             if (meal.products.length > 0) Divider(),
@@ -117,12 +123,14 @@ class _RecipePanel extends StatelessWidget {
   final Recipe recipe;
   final MealType type;
   final Function(int, MealType) updateRecipe;
+  final bool lockButtons;
 
   _RecipePanel({
     super.key,
     required this.recipe,
     required this.type,
     required this.updateRecipe,
+    required this.lockButtons,
   });
 
   IconData _icon() {
@@ -177,13 +185,16 @@ class _RecipePanel extends StatelessWidget {
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
-                            onTap: () => launchUrlString('https://talkychef.ru/recipe/${recipe.id}'),
+                            onTap: () => launchUrlString(
+                                'https://talkychef.ru/recipe/${recipe.id}'),
                           ),
                         ),
                         IconButton(
-                          onPressed: () {
-                            updateRecipe(recipe.id, type);
-                          },
+                          onPressed: lockButtons
+                              ? null
+                              : () {
+                                  updateRecipe(recipe.id, type);
+                                },
                           icon: Icon(
                             Icons.refresh,
                             size: 25,
@@ -209,16 +220,12 @@ class _RecipePanel extends StatelessWidget {
             child: Container(
               child: Column(
                 children: [
-                  ...recipe.ingredients.map(
-                    (ingredient) {
-                      return Column(
-                          children: [
-                            IngredientWidget(ingredient: ingredient),
-                            if (i++ != recipe.ingredients.length - 1) const Divider(),
-                          ]
-                      );
-                    }
-                  ),
+                  ...recipe.ingredients.map((ingredient) {
+                    return Column(children: [
+                      IngredientWidget(ingredient: ingredient),
+                      if (i++ != recipe.ingredients.length - 1) const Divider(),
+                    ]);
+                  }),
                 ],
               ),
             ),
@@ -233,12 +240,14 @@ class _ProductPanel extends StatelessWidget {
   final Product product;
   final MealType type;
   final Function(int, MealType) updateProduct;
+  final bool lockButtons;
 
   const _ProductPanel({
     super.key,
     required this.product,
     required this.type,
     required this.updateProduct,
+    required this.lockButtons,
   });
 
   @override
@@ -279,10 +288,12 @@ class _ProductPanel extends StatelessWidget {
                 ),
               ),
               IconButton(
-                onPressed: () {
-                  print(555666);
-                  updateProduct(product.id, type);
-                },
+                onPressed: lockButtons
+                    ? null
+                    : () {
+                        print(555666);
+                        updateProduct(product.id, type);
+                      },
                 icon: Icon(
                   Icons.refresh,
                   size: 25,
