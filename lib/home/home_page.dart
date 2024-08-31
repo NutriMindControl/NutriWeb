@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   List<String> weights = [];
   List<String> ages = [];
   List<String> activitylevels = [];
+  int updateCount = 0; // Счетчик обновлений
 
   List<String> diagnosisValues = [];
   List<FoodValue> foodValues = [
@@ -143,17 +144,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void onChangedPhysicalActivityLevel(String? physicalActivityLeve) {
-    lockButtons = false;
+    updateCount = 0;
     setState(() => currentPhysicalActivityLevel =
         physicalActivityLeve ?? currentPhysicalActivityLevel);
   }
 
   void onChangedDiagnose(String? diagnose) {
+    updateCount = 0;
     setState(() => currentDiagnose = diagnose ?? currentDiagnose);
   }
 
   void onChangedGender(int index) {
-    lockButtons = false;
+    updateCount = 0;
     setState(() {
       for (int i = 0; i < selected.length; i++) {
         selected[i] = i == index;
@@ -162,26 +164,32 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void updateMeal(MealType type) async {
+    if (updateCount >= 3) return; // Блокируем после 3 нажатий
     final newDailyMenu =
         await DailyMenuService().updateMeal(type.name, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
+      updateCount++; // Увеличиваем счетчик после обновления
     });
   }
 
   void updateRecipe(int id, MealType type) async {
+    if (updateCount >= 3) return; // Блокируем после 3 нажатий
     final newDailyMenu =
         await DailyMenuService().updateRecipe(id, type, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
+      updateCount++; // Увеличиваем счетчик после обновления
     });
   }
 
   void updateProduct(int id, MealType type) async {
+    if (updateCount >= 3) return; // Блокируем после 3 нажатий
     final newDailyMenu =
         await DailyMenuService().updateProduct(id, type, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
+      updateCount++; // Увеличиваем счетчик после обновления
     });
   }
 
@@ -194,7 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
         lastDate: DateTime(2101));
     if (picked != null) {
       dateTime = picked;
-      lockButtons = false;
+      updateCount = 0;
       ageController.text = calculateAge(picked).toString();
       currentAge = calculateAge(picked).toString();
       setState(() {});
@@ -237,10 +245,14 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextFieldWidget(
                       title: hintHeight,
                       controller: heightController,
+                      onChange: () {
+
+                      },
                     ),
                     TextFieldWidget(
                       title: hintWeight,
                       controller: weightController,
+                      onChange: () {},
                     ),
                     // TopDropButton(
                     //   dropdownValue: currentAge,
@@ -250,6 +262,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     //   width: 100,
                     // ),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           "Возраст: ",
@@ -269,9 +282,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             cursorHeight: 20,
                             style: const TextStyle(
                               // color: MyColors().darkComponent,
-                              fontSize: 18,
+                              fontSize: 20,
                             ),
-                            controller: ageController, //the controller
+                            controller: ageController,
+                            decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical:
+                                      10), // Добавление отступа для текстового поля
+                            ), //the controller
                           ),
                         ),
                       ],
@@ -298,29 +316,29 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 270,
                     ),
                     //diagnoseId
-                    if (!infoExist)
-                      TextButton(
-                        onPressed: () async {
-                          if (weightController.text.isNotEmpty &&
-                              currentAge != null &&
-                              currentDiagnose != null &&
-                              currentPhysicalActivityLevel != null &&
-                              heightController.text.isNotEmpty) {
-                            infoExist = true;
-                            await _getDailyMenu();
-                          }
-                          setState(() {});
-                        },
-                        child: Text(
-                          'Найти рецепты',
-                          style: TextStyle(
-                            color: MyColors().darkComponent,
-                            fontSize: 20,
-                            decoration: TextDecoration.underline,
-                            decorationColor: MyColors().darkComponent,
-                          ),
+                    // if (!infoExist)
+                    TextButton(
+                      onPressed: () async {
+                        if (weightController.text.isNotEmpty &&
+                            currentAge != null &&
+                            currentDiagnose != null &&
+                            currentPhysicalActivityLevel != null &&
+                            heightController.text.isNotEmpty) {
+                          infoExist = true;
+                          await _getDailyMenu();
+                        }
+                        setState(() {});
+                      },
+                      child: Text(
+                        'Найти рецепты',
+                        style: TextStyle(
+                          color: MyColors().darkComponent,
+                          fontSize: 20,
+                          decoration: TextDecoration.underline,
+                          decorationColor: MyColors().darkComponent,
                         ),
                       ),
+                    ),
                     if (infoExist && !isLoading) Spacer(),
                     if (infoExist && !isLoading)
                       Padding(
@@ -381,13 +399,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Center(
       child: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 100,
           ),
-          Container(
+          const SizedBox(
             width: 300,
             height: 200,
-            child: const RiveAnimation.asset('404_cat.riv'),
+            child: RiveAnimation.asset('404_cat.riv'),
           ),
           Text(
             "Введите свои данные!",
@@ -444,7 +462,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return PieChartSectionData(
         color: colors[i++],
         value: value.toDouble(),
-        title: '${value}%',
+        title: '$value%',
         radius: 40,
       );
     }).toList();
@@ -477,7 +495,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.breakfast,
               meal: dailyMenu.breakfastMeals,
-              lockButtons: lockButtons,
+              lockButtons: updateCount >= 3,
             ),
             MealPanel(
               updateMeal: updateMeal,
@@ -485,7 +503,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.launch,
               meal: dailyMenu.launchMeals,
-              lockButtons: lockButtons,
+              lockButtons: updateCount >= 3,
             ),
             MealPanel(
               updateMeal: updateMeal,
@@ -493,7 +511,7 @@ class _MyHomePageState extends State<MyHomePage> {
               updateProduct: updateProduct,
               type: MealType.dinner,
               meal: dailyMenu.dinnerMeals,
-              lockButtons: lockButtons,
+              lockButtons: updateCount >= 3,
             ),
           ],
         ),
