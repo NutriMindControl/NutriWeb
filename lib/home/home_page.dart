@@ -1,6 +1,3 @@
-import 'dart:html';
-import 'dart:typed_data';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +27,10 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
+Map products = {};
+Map recipes = {};
+Map miles = {};
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> heights = [];
@@ -163,33 +164,61 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void updateMeal(MealType type) async {
-    if (updateCount >= 3) return; // Блокируем после 3 нажатий
+  void updateMeal(MealType type, int index) async {
     final newDailyMenu =
         await DailyMenuService().updateMeal(type.name, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
-      updateCount++; // Увеличиваем счетчик после обновления
+      if (miles[type] == null) {
+        miles[type] = {};
+        miles[type]["${index}"] = 1;
+      } else {
+        if (miles[type]["${index}"] == null) {
+          miles[type]["${index}"] = 1;
+        } else {
+          miles[type]["${index}"] += 1;
+        }
+      }
+      print(miles);
     });
   }
 
-  void updateRecipe(int id, MealType type) async {
-    if (updateCount >= 3) return; // Блокируем после 3 нажатий
+  void updateRecipe(int id, MealType type, int index) async {
     final newDailyMenu =
         await DailyMenuService().updateRecipe(id, type, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
-      updateCount++; // Увеличиваем счетчик после обновления
+      if (recipes[type] == null) {
+        recipes[type] = {};
+        recipes[type]["${index}"] = 1;
+      } else {
+        if (recipes[type]["${index}"] == null) {
+          recipes[type]["${index}"] = 1;
+        } else {
+          recipes[type]["${index}"] += 1;
+        }
+      }
+      print(recipes);
     });
   }
 
-  void updateProduct(int id, MealType type) async {
-    if (updateCount >= 3) return; // Блокируем после 3 нажатий
+  void updateProduct(int id, MealType type, int index) async {
     final newDailyMenu =
         await DailyMenuService().updateProduct(id, type, 1, dailyMenu);
     setState(() {
       dailyMenu = newDailyMenu;
       updateCount++; // Увеличиваем счетчик после обновления
+      if (products[type] == null) {
+        products[type] = {};
+        products[type]["$index"] = 1;
+      } else {
+        if (products[type]["$index"] == null) {
+          products[type]["$index"] = 1;
+        } else {
+          products[type]["$index"] += 1;
+        }
+      }
+      print(products);
     });
   }
 
@@ -245,9 +274,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     TextFieldWidget(
                       title: hintHeight,
                       controller: heightController,
-                      onChange: () {
-
-                      },
+                      onChange: () {},
                     ),
                     TextFieldWidget(
                       title: hintWeight,
@@ -471,7 +498,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return PieChartSectionData(
         color: colors[i++],
         value: value.toDouble(),
-        title: '${value}%',
+        title: '$value%',
         radius: 40,
       );
     }).toList();
@@ -480,7 +507,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return PieChartSectionData(
         color: colors[i++],
         value: value.toDouble(),
-        title: '${value}%',
+        title: '$value%',
         radius: 40,
       );
     }).toList();
@@ -490,29 +517,29 @@ class _MyHomePageState extends State<MyHomePage> {
         Column(
           children: [
             MealPanel(
-              updateMeal: updateMeal,
-              updateRecipe: updateRecipe,
-              updateProduct: updateProduct,
-              type: MealType.breakfast,
-              meal: dailyMenu.breakfastMeals,
-              lockButtons: updateCount >= 3,
-            ),
+                updateMeal: updateMeal,
+                updateRecipe: updateRecipe,
+                updateProduct: updateProduct,
+                type: MealType.breakfast,
+                meal: dailyMenu.breakfastMeals,
+                lockButtons: updateCount >= 3,
+                index: 0),
             MealPanel(
-              updateMeal: updateMeal,
-              updateRecipe: updateRecipe,
-              updateProduct: updateProduct,
-              type: MealType.launch,
-              meal: dailyMenu.launchMeals,
-              lockButtons: updateCount >= 3,
-            ),
+                updateMeal: updateMeal,
+                updateRecipe: updateRecipe,
+                updateProduct: updateProduct,
+                type: MealType.launch,
+                meal: dailyMenu.launchMeals,
+                lockButtons: updateCount >= 3,
+                index: 0),
             MealPanel(
-              updateMeal: updateMeal,
-              updateRecipe: updateRecipe,
-              updateProduct: updateProduct,
-              type: MealType.dinner,
-              meal: dailyMenu.dinnerMeals,
-              lockButtons: updateCount >= 3,
-            ),
+                updateMeal: updateMeal,
+                updateRecipe: updateRecipe,
+                updateProduct: updateProduct,
+                type: MealType.dinner,
+                meal: dailyMenu.dinnerMeals,
+                lockButtons: updateCount >= 3,
+                index: 0),
           ],
         ),
         Column(
@@ -537,7 +564,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           Text(
                             "${_handleDouble(imt)}",
-                            style: TextStyle(fontSize: 25),
+                            style: const TextStyle(fontSize: 25),
                           ),
                         ],
                       ),

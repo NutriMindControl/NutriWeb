@@ -9,18 +9,20 @@ import 'package:sberlab/entity/recipe.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../home/home_page.dart';
 import 'block.dart';
 import 'food_value_widget.dart';
 
 class MealPanel extends StatelessWidget {
   final Meal meal;
   final MealType type;
-  final Function(MealType) updateMeal;
-  final Function(int, MealType) updateRecipe;
-  final Function(int, MealType) updateProduct;
+  final Function(MealType, int) updateMeal;
+  final Function(int, MealType, int) updateRecipe;
+  final Function(int, MealType, int) updateProduct;
   final bool lockButtons;
+  final int index;
 
-  MealPanel({
+  const MealPanel({
     super.key,
     required this.meal,
     required this.type,
@@ -28,6 +30,7 @@ class MealPanel extends StatelessWidget {
     required this.updateRecipe,
     required this.updateProduct,
     required this.lockButtons,
+    required this.index,
   });
 
   String _title() {
@@ -60,12 +63,14 @@ class MealPanel extends StatelessWidget {
                     fontSize: 30,
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 IconButton(
-                  onPressed: lockButtons
+                  onPressed: miles[type] != null &&
+                          miles[type]["$index"] != null &&
+                          miles[type]["$index"] == 3
                       ? null
                       : () {
-                          updateMeal(type);
+                          updateMeal(type, index);
                         },
                   icon: Icon(
                     Icons.refresh,
@@ -81,6 +86,7 @@ class MealPanel extends StatelessWidget {
                 type: type,
                 updateRecipe: updateRecipe,
                 lockButtons: lockButtons,
+                index: meal.recipes.indexOf(recipe),
               ),
             ),
             ...meal.products.map(
@@ -89,6 +95,7 @@ class MealPanel extends StatelessWidget {
                 type: type,
                 updateProduct: updateProduct,
                 lockButtons: lockButtons,
+                index: meal.products.indexOf(product),
               ),
             ),
             if (meal.products.length > 0) Divider(),
@@ -122,8 +129,9 @@ class MealPanel extends StatelessWidget {
 class _RecipePanel extends StatelessWidget {
   final Recipe recipe;
   final MealType type;
-  final Function(int, MealType) updateRecipe;
+  final Function(int, MealType, int) updateRecipe;
   final bool lockButtons;
+  final int index;
 
   _RecipePanel({
     super.key,
@@ -131,6 +139,7 @@ class _RecipePanel extends StatelessWidget {
     required this.type,
     required this.updateRecipe,
     required this.lockButtons,
+    required this.index,
   });
 
   IconData _icon() {
@@ -178,7 +187,7 @@ class _RecipePanel extends StatelessWidget {
                           child: InkWell(
                             child: Text(
                               recipe.name,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 // color: Colors.blue,
                                 decoration: TextDecoration.underline,
                                 fontSize: 30,
@@ -190,10 +199,12 @@ class _RecipePanel extends StatelessWidget {
                           ),
                         ),
                         IconButton(
-                          onPressed: lockButtons
+                          onPressed: recipes[type] != null &&
+                                  recipes[type]["${index}"] != null &&
+                                  recipes[type]["${index}"] == 3
                               ? null
                               : () {
-                                  updateRecipe(recipe.id, type);
+                                  updateRecipe(recipe.id, type, index);
                                 },
                           icon: Icon(
                             Icons.refresh,
@@ -205,7 +216,7 @@ class _RecipePanel extends StatelessWidget {
                     ),
                     Text(
                       'Время приготовления: ${recipe.cookTimeMins} минут',
-                      style: TextStyle(
+                      style: const TextStyle(
                         // color: MyColors().darkComponent,
                         fontSize: 20,
                       ),
@@ -217,17 +228,15 @@ class _RecipePanel extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: Container(
-              child: Column(
-                children: [
-                  ...recipe.ingredients.map((ingredient) {
-                    return Column(children: [
-                      IngredientWidget(ingredient: ingredient),
-                      if (i++ != recipe.ingredients.length - 1) const Divider(),
-                    ]);
-                  }),
-                ],
-              ),
+            child: Column(
+              children: [
+                ...recipe.ingredients.map((ingredient) {
+                  return Column(children: [
+                    IngredientWidget(ingredient: ingredient),
+                    if (i++ != recipe.ingredients.length - 1) const Divider(),
+                  ]);
+                }),
+              ],
             ),
           ),
         ],
@@ -239,8 +248,9 @@ class _RecipePanel extends StatelessWidget {
 class _ProductPanel extends StatelessWidget {
   final Product product;
   final MealType type;
-  final Function(int, MealType) updateProduct;
+  final Function(int, MealType, int) updateProduct;
   final bool lockButtons;
+  final int index;
 
   const _ProductPanel({
     super.key,
@@ -248,13 +258,14 @@ class _ProductPanel extends StatelessWidget {
     required this.type,
     required this.updateProduct,
     required this.lockButtons,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(),
+        const Divider(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
           child: Row(
@@ -265,34 +276,38 @@ class _ProductPanel extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: MyColors().lightComponent,
                     borderRadius: BorderRadius.circular(10)),
-                child: Icon(Icons.fastfood_rounded),
+                child: const Icon(Icons.fastfood_rounded),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
+                child: SizedBox(
                   width: 480,
                   child: Text(
                     product.name,
-                    style: TextStyle(fontSize: 20),
+                    style: const TextStyle(fontSize: 20),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   '${product.serving.round()} г',
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
               IconButton(
-                onPressed: lockButtons
+                onPressed: products[type] != null &&
+                        products[type]["${index}"] != null &&
+                        products[type]["${index}"] == 3
                     ? null
                     : () {
-                        print(555666);
-                        updateProduct(product.id, type);
+                        print(products[type] != null &&
+                            products[type]["${index}"] != null &&
+                            products[type]["${index}"] == 3);
+                        updateProduct(product.id, type, index);
                       },
                 icon: Icon(
                   Icons.refresh,
