@@ -69,14 +69,14 @@ class DailyMenuService {
     }
   }
 
-  Future<DailyMenu> getDailyMenu(String height, String weight, String age, bool isMale, String physicalActivityLevel, int diagnoseId) async {
+  Future<DailyMenu> getDailyMenu(String height, String weight, String age, bool isMale, String? physicalActivityLevel, int diagnoseId) async {
     try {
       var params = {
         "height": height,
         "weight": weight,
         "age": age,
         "gender": isMale ? "Муж." : "Жен.",
-        "physical_activity_level": physicalActivityLevel,
+        "physical_activity_level": "Отсутствие физической активности",
         "diagnose_id": diagnoseId.toString(),
       };
 

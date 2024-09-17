@@ -20,7 +20,6 @@ class _MyToggleButtonsState extends State<MyToggleButtons> {
     return ToggleButtons(
       direction: Axis.horizontal,
       onPressed: (int index) {
-        print(55444);
         onChanged(index);
       },
       borderRadius: const BorderRadius.all(Radius.circular(20)),

@@ -15,6 +15,7 @@ import 'package:sberlab/entity/food_value.dart';
 import 'package:sberlab/mappers/daily_menu_mapper.dart';
 import 'package:sberlab/service/daily_menu_service.dart';
 import 'package:sberlab/service/mock_daily_menu_service.dart';
+import 'package:sberlab/size_calculator.dart';
 
 import '../assets/colors.dart';
 import 'dart:html' as html;
@@ -99,9 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
     final height = heightController.text;
     final weight = weightController.text;
     final age = currentAge!.split(' ');
+    print(676767);
+    print(age);
     await DailyMenuService()
         .getDailyMenu(height, weight, age[0], selected[0] == true,
-            currentPhysicalActivityLevel!, id)
+            currentPhysicalActivityLevel, id)
         .then((value) {
       setState(() {
         dailyMenu = value;
@@ -227,6 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         initialDate: dateTime,
         initialDatePickerMode: DatePickerMode.day,
+        locale: const Locale("ru", "RU"),
         firstDate: DateTime(1900, 1, 1),
         lastDate: DateTime(2101));
     if (picked != null) {
@@ -281,13 +285,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       controller: weightController,
                       onChange: () {},
                     ),
-                    // TopDropButton(
-                    //   dropdownValue: currentAge,
-                    //   list: ages,
-                    //   onChanged: onChangedAge,
-                    //   hint: hintAge,
-                    //   width: 100,
-                    // ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -295,11 +292,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           "Возраст: ",
                           style: TextStyle(
                             color: MyColors().darkComponent,
-                            fontSize: 20,
+                            fontSize: SizeCalculator().calcSize(context, 0.015),
                           ),
                         ),
                         Container(
-                          width: 50,
+                          width: SizeCalculator().calcSize(context, 0.03),
                           padding: const EdgeInsets.only(bottom: 15, right: 10),
                           alignment: Alignment.center,
                           child: TextFormField(
@@ -315,13 +312,13 @@ class _MyHomePageState extends State<MyHomePage> {
                             decoration: const InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
                                   vertical:
-                                      10), // Добавление отступа для текстового поля
+                                      10,), // Добавление отступа для текстового поля
                             ), //the controller
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: SizeCalculator().calcSize(context, 0.006)),
                     // age
                     MyToggleButtons(
                       selected: selected,
@@ -332,7 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       list: activitylevels,
                       onChanged: onChangedPhysicalActivityLevel,
                       hint: hintPhysicalActivityLevel,
-                      width: 200,
+                      width: SizeCalculator().calcSize(context, 0.12),
                     ),
                     //physicalActivityLevel
                     TopDropButton(
@@ -340,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       list: diagnosisValues,
                       onChanged: onChangedDiagnose,
                       hint: hintDiagnose,
-                      width: 270,
+                      width: SizeCalculator().calcSize(context, 0.15),
                     ),
                     //diagnoseId
                     // if (!infoExist)
@@ -349,7 +346,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         if (weightController.text.isNotEmpty &&
                             currentAge != null &&
                             currentDiagnose != null &&
-                            currentPhysicalActivityLevel != null &&
                             heightController.text.isNotEmpty) {
                           infoExist = true;
                           await _getDailyMenu();
@@ -360,7 +356,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         'Найти рецепты',
                         style: TextStyle(
                           color: MyColors().darkComponent,
-                          fontSize: 20,
+                          fontSize: SizeCalculator().calcSize(context, 0.012),
                           decoration: TextDecoration.underline,
                           decorationColor: MyColors().darkComponent,
                         ),
@@ -387,7 +383,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                           icon: Icon(
                             Icons.download,
-                            size: 30,
+                            size: SizeCalculator().calcSize(context, 0.02),
                             color: MyColors().darkComponent,
                           ),
                         ),

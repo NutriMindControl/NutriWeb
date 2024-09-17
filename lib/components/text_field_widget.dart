@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sberlab/size_calculator.dart';
 
 import '../assets/colors.dart';
 
@@ -27,13 +28,13 @@ class TextFieldWidget extends StatelessWidget {
             "$title: ",
             style: TextStyle(
               color: MyColors().darkComponent,
-              fontSize: 20,
+              fontSize: SizeCalculator().calcSize(context, 0.015),
             ),
           ),
           const SizedBox(width: 10),
           // Добавление отступа между текстом и полем ввода
           SizedBox(
-            width: 50,
+            width: SizeCalculator().calcSize(context, 0.03),
             height: 50, // Уменьшенная высота контейнера для центрирования
             child: TextFormField(
               controller: controller,
@@ -49,9 +50,9 @@ class TextFieldWidget extends StatelessWidget {
                   ),
                 ),
               ],
-              style: const TextStyle(
+              style: TextStyle(
                 // color: MyColors().darkComponent,
-                fontSize: 20,
+                fontSize: SizeCalculator().calcSize(context, 0.014),
               ),
               onChanged: onChange(),
               decoration: const InputDecoration(

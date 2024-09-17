@@ -6,6 +6,7 @@ import 'package:sberlab/entity/food_value.dart';
 import 'package:sberlab/entity/ingredient.dart';
 import 'package:sberlab/entity/product.dart';
 import 'package:sberlab/entity/recipe.dart';
+import 'package:sberlab/size_calculator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -51,7 +52,7 @@ class MealPanel extends StatelessWidget {
       // height: MediaQuery.of(context).size.height * 0.8,
       padding: MediaQuery.of(context).size.width * 0.01,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+        padding: EdgeInsets.symmetric(vertical: SizeCalculator().calcSize(context, 0.01), horizontal: 30),
         child: Column(
           children: [
             Row(
@@ -164,33 +165,33 @@ class _RecipePanel extends StatelessWidget {
           Row(
             children: [
               Container(
-                height: 80,
-                width: 80,
+                height: SizeCalculator().calcSize(context, 0.04),
+                width: SizeCalculator().calcSize(context, 0.05),
                 decoration: BoxDecoration(
                   color: MyColors().lightComponent,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   _icon(),
-                  size: 30,
+                  size: SizeCalculator().calcSize(context, 0.03),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: EdgeInsets.symmetric(horizontal: SizeCalculator().calcSize(context, 0.01)),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         SizedBox(
-                          width: 500,
+                          width: SizeCalculator().calcSize(context, 0.35),
                           child: InkWell(
                             child: Text(
                               recipe.name,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 // color: Colors.blue,
                                 decoration: TextDecoration.underline,
-                                fontSize: 30,
+                                fontSize: SizeCalculator().calcSize(context, 0.025),
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -208,7 +209,7 @@ class _RecipePanel extends StatelessWidget {
                                 },
                           icon: Icon(
                             Icons.refresh,
-                            size: 25,
+                            size: SizeCalculator().calcSize(context, 0.02),
                             color: MyColors().darkComponent,
                           ),
                         ),
@@ -216,9 +217,9 @@ class _RecipePanel extends StatelessWidget {
                     ),
                     Text(
                       'Время приготовления: ${recipe.cookTimeMins} минут',
-                      style: const TextStyle(
+                      style: TextStyle(
                         // color: MyColors().darkComponent,
-                        fontSize: 20,
+                        fontSize: SizeCalculator().calcSize(context, 0.02),
                       ),
                     ),
                   ],
@@ -267,24 +268,24 @@ class _ProductPanel extends StatelessWidget {
       children: [
         const Divider(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: SizeCalculator().calcSize(context, 0.01), vertical: 10),
           child: Row(
             children: [
               Container(
-                height: 50,
-                width: 50,
+                height: SizeCalculator().calcSize(context, 0.035),
+                width: SizeCalculator().calcSize(context, 0.035),
                 decoration: BoxDecoration(
                     color: MyColors().lightComponent,
                     borderRadius: BorderRadius.circular(10)),
                 child: const Icon(Icons.fastfood_rounded),
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(SizeCalculator().calcSize(context, 0.005)),
                 child: SizedBox(
-                  width: 480,
+                  width: SizeCalculator().calcSize(context, 0.35),
                   child: Text(
                     product.name,
-                    style: const TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: SizeCalculator().calcSize(context, 0.015)),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -292,10 +293,10 @@ class _ProductPanel extends StatelessWidget {
               ),
               const Spacer(),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(SizeCalculator().calcSize(context, 0.004)),
                 child: Text(
                   '${product.serving.round()} г',
-                  style: const TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: SizeCalculator().calcSize(context, 0.015)),
                 ),
               ),
               IconButton(
@@ -311,7 +312,7 @@ class _ProductPanel extends StatelessWidget {
                       },
                 icon: Icon(
                   Icons.refresh,
-                  size: 25,
+                  size: SizeCalculator().calcSize(context, 0.02),
                   color: MyColors().darkComponent,
                 ),
               ),

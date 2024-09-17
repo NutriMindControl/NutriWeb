@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sberlab/assets/colors.dart';
+import 'package:sberlab/size_calculator.dart';
 
 class TopDropButton extends StatefulWidget {
   final dropdownValue;
@@ -31,9 +32,9 @@ class _TopDropButtonState extends State<TopDropButton> {
   Widget build(BuildContext context) {
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+      padding: EdgeInsets.symmetric(horizontal: SizeCalculator().calcSize(context, 0.01)),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        padding: EdgeInsets.symmetric(horizontal: SizeCalculator().calcSize(context, 0.005)),
         decoration: BoxDecoration(
           color: MyColors().lightComponent,
           borderRadius: BorderRadius.circular(15)
@@ -53,7 +54,7 @@ class _TopDropButtonState extends State<TopDropButton> {
                           child: Text(
                               value,
                             style: TextStyle(
-                              fontSize: 15
+                              fontSize: SizeCalculator().calcSize(context, 0.01)
                             ),
                               overflow: TextOverflow.ellipsis,
                             maxLines: 2,
