@@ -20,6 +20,8 @@ jobs:
         uses: actions/checkout@v3
       - name: container ls
         run: docker container ls
+      - name: container stop
+        run: docker stop cd6ca0261363
       - name: docker-build
         run: docker build -t talkychef-web .
       - name: docker-run
