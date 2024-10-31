@@ -25,7 +25,7 @@ mixin _$RecipeDTO {
   List<IngredientDTO> get ingredients_distributions =>
       throw _privateConstructorUsedError;
   int get cook_time_mins => throw _privateConstructorUsedError;
-  int? get prep_time_mins => throw _privateConstructorUsedError;
+  String? get prep_time_mins => throw _privateConstructorUsedError;
   double get servings => throw _privateConstructorUsedError;
   double get calories => throw _privateConstructorUsedError;
   double get proteins => throw _privateConstructorUsedError;
@@ -48,7 +48,7 @@ abstract class $RecipeDTOCopyWith<$Res> {
       String name,
       List<IngredientDTO> ingredients_distributions,
       int cook_time_mins,
-      int? prep_time_mins,
+      String? prep_time_mins,
       double servings,
       double calories,
       double proteins,
@@ -100,7 +100,7 @@ class _$RecipeDTOCopyWithImpl<$Res, $Val extends RecipeDTO>
       prep_time_mins: freezed == prep_time_mins
           ? _value.prep_time_mins
           : prep_time_mins // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       servings: null == servings
           ? _value.servings
           : servings // ignore: cast_nullable_to_non_nullable
@@ -138,7 +138,7 @@ abstract class _$$RecipeDTOImplCopyWith<$Res>
       String name,
       List<IngredientDTO> ingredients_distributions,
       int cook_time_mins,
-      int? prep_time_mins,
+      String? prep_time_mins,
       double servings,
       double calories,
       double proteins,
@@ -188,7 +188,7 @@ class __$$RecipeDTOImplCopyWithImpl<$Res>
       prep_time_mins: freezed == prep_time_mins
           ? _value.prep_time_mins
           : prep_time_mins // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       servings: null == servings
           ? _value.servings
           : servings // ignore: cast_nullable_to_non_nullable
@@ -248,7 +248,7 @@ class _$RecipeDTOImpl with DiagnosticableTreeMixin implements _RecipeDTO {
   @override
   final int cook_time_mins;
   @override
-  final int? prep_time_mins;
+  final String? prep_time_mins;
   @override
   final double servings;
   @override
@@ -342,7 +342,7 @@ abstract class _RecipeDTO implements RecipeDTO {
       required final String name,
       required final List<IngredientDTO> ingredients_distributions,
       required final int cook_time_mins,
-      required final int? prep_time_mins,
+      required final String? prep_time_mins,
       required final double servings,
       required final double calories,
       required final double proteins,
@@ -361,7 +361,7 @@ abstract class _RecipeDTO implements RecipeDTO {
   @override
   int get cook_time_mins;
   @override
-  int? get prep_time_mins;
+  String? get prep_time_mins;
   @override
   double get servings;
   @override

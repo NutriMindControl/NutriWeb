@@ -91,7 +91,7 @@ class DailyMenuService {
         return DailyMenuMapper().fromDto(dailyMenu);
       }
     } catch (e) {
-      throw Exception('bebebe');
+      throw Exception('bebebe $e');
     }
   }
 

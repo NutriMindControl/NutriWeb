@@ -4,7 +4,7 @@ class Recipe {
   final int id;
   final String name;
   final List<Ingredient> ingredients;
-  final int? prepTimeMins;
+  final String? prepTimeMins;
   final int cookTimeMins;
   final double servings;
   final double calories;

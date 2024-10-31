@@ -13,7 +13,7 @@ class RecipeDTO with _$RecipeDTO {
     required String name,
     required List<IngredientDTO> ingredients_distributions,
     required int cook_time_mins,
-    required int? prep_time_mins,
+    required String? prep_time_mins,
     required double servings,
     required double calories,
     required double proteins,

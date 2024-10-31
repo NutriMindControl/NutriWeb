@@ -15,8 +15,8 @@ _$RecipeDTOImpl _$$RecipeDTOImplFromJson(Map<String, dynamic> json) =>
               .map((e) => IngredientDTO.fromJson(e as Map<String, dynamic>))
               .toList(),
       cook_time_mins: (json['cook_time_mins'] as num).toInt(),
-      prep_time_mins: (json['prep_time_mins'] as num?)?.toInt(),
-      servings: (json['servings'] as num).toDouble(),
+      prep_time_mins: json['prep_time_mins'] as String?,
+      servings: 0,
       calories: (json['calories'] as num).toDouble(),
       proteins: (json['proteins'] as num).toDouble(),
       fats: (json['fats'] as num).toDouble(),

@@ -83,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
         diagnosis = value;
         diagnosisValues =
             diagnosis.map((e) => e.diagnosisDescription as String).toList();
+        print(diagnosisValues);
       });
     });
   }
@@ -95,13 +96,9 @@ class _MyHomePageState extends State<MyHomePage> {
         break;
       }
     }
-    print(454545);
-    print(id);
     final height = heightController.text;
     final weight = weightController.text;
     final age = currentAge!.split(' ');
-    print(676767);
-    print(age);
     await DailyMenuService()
         .getDailyMenu(height, weight, age[0], selected[0] == true,
             currentPhysicalActivityLevel, id)
@@ -311,8 +308,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             controller: ageController,
                             decoration: const InputDecoration(
                               contentPadding: EdgeInsets.symmetric(
-                                  vertical:
-                                      10,), // Добавление отступа для текстового поля
+                                vertical: 10,
+                              ), // Добавление отступа для текстового поля
                             ), //the controller
                           ),
                         ),
@@ -343,11 +340,44 @@ class _MyHomePageState extends State<MyHomePage> {
                     // if (!infoExist)
                     TextButton(
                       onPressed: () async {
+                        // Проверка возраста и состояния поля физической активности
+                        if (currentAge != null &&
+                            int.parse(currentAge!) < 18 &&
+                            currentPhysicalActivityLevel == null) {
+                          print(int.parse(currentAge!) >= 18);
+                        } else if (currentAge != null &&
+                            int.parse(currentAge!) >= 18 &&
+                            currentPhysicalActivityLevel == null) {
+                          print(int.parse(currentAge!) >= 18);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text(""),
+                                content: const Text(
+                                    "Пожалуйста, заполните поле физической активности."),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                              ;
+                            },
+                          );
+                          return;
+                        }
                         if (weightController.text.isNotEmpty &&
                             currentAge != null &&
                             currentDiagnose != null &&
                             heightController.text.isNotEmpty) {
                           infoExist = true;
+                          setState(() {
+                            isLoading = true;
+                          });
                           await _getDailyMenu();
                         }
                         setState(() {});
