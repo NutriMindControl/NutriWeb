@@ -2,7 +2,7 @@ name: Deploy by runner
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   prepare-prod:
@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: checkout repo
         uses: actions/checkout@v3
+      - name: container ls
+        run: docker container ls
       - name: docker-build
         run: docker build -t talkychef-web .
       - name: docker-run
